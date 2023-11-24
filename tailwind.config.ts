@@ -1,6 +1,9 @@
 import type { Config } from 'tailwindcss'
 const { fontFamily } = require('tailwindcss/defaultTheme')
-
+require('@vidstack/react/tailwind.cjs')({
+    // Change the media variants prefix.
+    prefix: 'media',
+})
 /** @type {import('tailwindcss').Config} */
 const config: Config = {
     content: [
@@ -81,6 +84,9 @@ const config: Config = {
             },
         },
     },
-    plugins: [require('tailwindcss-animate')],
+    plugins: [
+        require('tailwindcss-animate'),
+        require('@vidstack/react/tailwind.cjs'),
+    ],
 }
 export default config

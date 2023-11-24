@@ -76,18 +76,7 @@ const page = () => {
                         onChange={handleOnChangeLoginData}
                         placeHolder='Xác nhân mật khẩu'
                     />
-                    <div className='flex items-center justify-between'>
-                        <div className='flex items-center space-x-2'>
-                            <Checkbox
-                                id='remember_account'
-                                className='border-[#939290]'
-                            />
-                            <label htmlFor='remember_account'>
-                                <span className='text-[rgba(0,0,0,.5)] cursor-pointer'>
-                                    Nhớ mật khẩu
-                                </span>
-                            </label>
-                        </div>
+                    <div className='flex items-center justify-end'>
                         <span className='text-[#6A5BCD] hover:text-[#4dc3ea] cursor-pointer'>
                             Quên mật khẩu?
                         </span>

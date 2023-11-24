@@ -1,4 +1,4 @@
-export const HandleVideoUpLoadTime = (video_upload_time: string) => {
+export const handleVideoUpLoadTime = (video_upload_time: string) => {
     const currentDateTime = new Date()
     const videoUpLoadAt = new Date(video_upload_time)
     const dayDiff = Math.floor(
@@ -7,4 +7,14 @@ export const HandleVideoUpLoadTime = (video_upload_time: string) => {
     )
 
     return dayDiff
+}
+
+export const handlePosterSelect = (
+    poster: {
+        img: File | string
+        imgPreview: string
+        select: boolean
+    }[],
+) => {
+    return poster.find((posterData) => posterData.select == true)
 }

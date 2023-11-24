@@ -1,3 +1,4 @@
+'use client'
 import { InputProps } from '~/utils/interface'
 import { useRef } from 'react'
 

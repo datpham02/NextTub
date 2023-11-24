@@ -25,8 +25,27 @@ export interface SideBarItemProps {
     active: boolean
     type?: 'default' | 'collapse'
 }
-export interface SideBarProps {
+export interface HomeSideBarProps {
     handleHideSideBar: () => void
     hideSideBar: boolean
     setHideSideBar: React.Dispatch<React.SetStateAction<boolean>>
+}
+export interface WatchSideBarProps {
+    handleHideSideBar: () => void
+    hideSideBar: boolean
+    setHideSideBar: React.Dispatch<React.SetStateAction<boolean>>
+}
+export interface VideoPlayerProps {
+    src: string
+    poster: string
+    alt: string
+    size?: 'normal' | 'minimize'
+}
+export interface UpLoadPosterFieldProps {
+    poster: { img: File | string; imgPreview: string; select: boolean }[]
+    handleUpLoadPoster: (e: any) => void
+    handleSelectPoster: (index: number) => void
+}
+export interface VideoPlayerLayoutProps {
+    size: 'normal' | 'minimize'
 }
