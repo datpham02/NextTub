@@ -3,10 +3,11 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import { AiOutlinePlayCircle } from 'react-icons/ai'
 import { IoLogOutOutline } from 'react-icons/io5'
-import { MdOutlineSwitchAccount } from 'react-icons/md'
 import { RiAccountBoxLine } from 'react-icons/ri'
+import { useAuth } from '~/store/Auth'
 
 const AccountSetting = () => {
+    const { account, logout } = useAuth()
     const [visible, setVisible] = useState(false)
     return (
         <Tippy
@@ -22,24 +23,16 @@ const AccountSetting = () => {
                     className='w-[300px] flex flex-col bg-[#fff] rounded-md shadow-md'
                 >
                     <div className='flex gap-3 items-center border-b-[1px] border-b-solid px-[15px] py-[10px]'>
-                        {/* <div>
-                                                <img
-                                                    src={
-                                                        userChannelInfo?.picture
-                                                    }
-                                                    className='rounded-full w-[35px] h-[35px]'
-                                                />
-                                            </div>
-                                            <div className='flex flex-col'>
-                                                <span>
-                                                    {
-                                                        userChannelInfo?.channelName
-                                                    }
-                                                </span>
-                                                <span>
-                                                    {userChannelInfo?.userName}
-                                                </span>
-                                            </div> */}
+                        <div>
+                            <img
+                                src={account?.channel?.avatar}
+                                className='rounded-full w-[35px] h-[35px]'
+                            />
+                        </div>
+                        <div className='flex flex-col'>
+                            <span>{account?.channel?.name}</span>
+                            <span>{account?.email}</span>
+                        </div>
                     </div>
                     <div className='flex flex-col'>
                         <Link href={'/studio'}>
@@ -52,7 +45,7 @@ const AccountSetting = () => {
                                 </div>
                             </div>
                         </Link>
-                        <Link href={'/channel'}>
+                        {/* <Link href={'/channel'}>
                             <div className='flex items-center hover:bg-[rgba(0,0,0,0.1)] px-[15px] py-[8px] cursor-pointer'>
                                 <div className='flex items-center gap-4'>
                                     <RiAccountBoxLine className='w-[25px] h-[25px]' />
@@ -61,10 +54,11 @@ const AccountSetting = () => {
                                     </span>
                                 </div>
                             </div>
-                        </Link>
+                        </Link> */}
 
                         <div
                             onClick={() => {
+                                logout()
                                 setVisible(false)
                             }}
                             className='flex items-center hover:bg-[rgba(0,0,0,0.1)] px-[15px] py-[8px] cursor-pointer'
@@ -84,9 +78,7 @@ const AccountSetting = () => {
                 onClick={() => {
                     setVisible(!visible)
                 }}
-                src={
-                    'https://cdn.pixabay.com/photo/2022/12/01/04/42/man-7628305_1280.jpg'
-                }
+                src={account?.channel?.avatar}
                 className='rounded-full w-[35px] h-[35px]'
             />
         </Tippy>

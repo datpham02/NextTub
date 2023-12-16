@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { HiOutlineMenu } from 'react-icons/hi'
 import { IoMdArrowBack } from 'react-icons/io'
 import { MdOutlineAccountCircle } from 'react-icons/md'
@@ -10,12 +10,19 @@ import { IoIosSearch } from 'react-icons/io'
 import CreateVideo from './CreateVideo'
 import Notification from './Notification'
 import AccountSetting from './AccountSetting'
+import { useAuth } from '~/store/Auth'
 
 const Header = ({ handleHideSideBar }: HeaderProps) => {
+    const { account, logout, updateAccount } = useAuth()
     const [visibleSearch, setVisibleSearch] = useState<boolean>(false)
     const handleVisibleSearch = () => {
         setVisibleSearch(!visibleSearch)
     }
+
+    useEffect(() => {
+        updateAccount()
+    }, [])
+
     return (
         <>
             {visibleSearch ? (
@@ -46,14 +53,14 @@ const Header = ({ handleHideSideBar }: HeaderProps) => {
                     </div>
 
                     <div className='flex justify-end gap-5 mr-[20px]'>
-                        {true ? (
+                        {account.id != 0 ? (
                             <div className='flex items-center gap-2'>
                                 <IoIosSearch
                                     onClick={handleVisibleSearch}
                                     className='w-[30px] h-[30px] block lg:hidden'
                                 />
                                 <CreateVideo />
-                                <Notification />
+                                {/* <Notification /> */}
                                 <AccountSetting />
                             </div>
                         ) : (

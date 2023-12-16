@@ -11,14 +11,20 @@ import { ScrollArea } from '~/components/ScrollArea'
 import { Sheet, SheetContent } from '../Sheet'
 import SideBarItem from './SideBarItem'
 import { HomeSideBarProps } from '~/utils/interface'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useAuth } from '~/store/Auth'
+
 const SideBar = ({
     hideSideBar,
     setHideSideBar,
     handleHideSideBar,
 }: HomeSideBarProps) => {
+    const pathname = usePathname()
+    const { account } = useAuth()
     const [windowSize, setWindowSize] = useState({
-        width: window?.innerWidth,
-        height: window?.innerHeight,
+        width: 0,
+        height: 0,
     })
 
     const handleResize = () => {
@@ -35,6 +41,15 @@ const SideBar = ({
             window.removeEventListener('resize', handleResize)
         }
     }, [])
+    useEffect(() => {
+        if (window) {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            })
+        }
+    }, [])
+
     return (
         <>
             <ScrollArea
@@ -52,90 +67,107 @@ const SideBar = ({
                         {hideSideBar ? (
                             <>
                                 <div className='flex flex-col px-[4px]'>
-                                    <SideBarItem
-                                        icon={
-                                            <MdHomeFilled className='w-[25px] h-[25px]' />
-                                        }
-                                        name='Trang chủ'
-                                        active={true}
-                                        type='collapse'
-                                    />
-                                    <SideBarItem
-                                        icon={
-                                            <BsCollectionPlay className='w-[25px] h-[25px]' />
-                                        }
-                                        name='Kênh đăng ký'
-                                        active={false}
-                                        type='collapse'
-                                    />
+                                    <Link href='/'>
+                                        <SideBarItem
+                                            icon={
+                                                <MdHomeFilled className='w-[25px] h-[25px]' />
+                                            }
+                                            name='Trang chủ'
+                                            active={pathname == '/'}
+                                            type='collapse'
+                                        />
+                                    </Link>
+
+                                    <Link href='/subcribed_channel'>
+                                        <SideBarItem
+                                            icon={
+                                                <BsCollectionPlay className='w-[25px] h-[25px]' />
+                                            }
+                                            name='Kênh đăng ký'
+                                            active={
+                                                pathname == '/subcribed_channel'
+                                            }
+                                            type='collapse'
+                                        />
+                                    </Link>
                                 </div>
                             </>
                         ) : (
                             <>
                                 <div className='px-[10px]'>
                                     <div className='flex flex-col py-[8px] border-b-[1px] border-b-solid'>
-                                        <SideBarItem
-                                            icon={
-                                                <MdHomeFilled className='w-[25px] h-[25px]' />
-                                            }
-                                            name='Trang chủ'
-                                            active={true}
-                                        />
-                                        <SideBarItem
-                                            icon={
-                                                <BsCollectionPlay className='w-[25px] h-[25px]' />
-                                            }
-                                            name='Kênh đăng ký'
-                                            active={false}
-                                        />
+                                        <Link href={'/'}>
+                                            <SideBarItem
+                                                icon={
+                                                    <MdHomeFilled className='w-[25px] h-[25px]' />
+                                                }
+                                                name='Trang chủ'
+                                                active={pathname == '/'}
+                                            />
+                                        </Link>
+                                        <Link href={'/subcribed_channel'}>
+                                            <SideBarItem
+                                                icon={
+                                                    <BsCollectionPlay className='w-[25px] h-[25px]' />
+                                                }
+                                                name='Kênh đăng ký'
+                                                active={
+                                                    pathname ==
+                                                    '/subcribed_channel'
+                                                }
+                                            />
+                                        </Link>
                                     </div>
                                     <div className='flex flex-col py-[8px] border-b-[1px] border-b-solid'>
-                                        <SideBarItem
-                                            icon={
-                                                <GiBackwardTime className='w-[25px] h-[25px]' />
-                                            }
-                                            name='Video đã xem'
-                                            active={false}
-                                        />
-                                        <SideBarItem
-                                            icon={
-                                                <AiOutlinePlaySquare className='w-[25px] h-[25px]' />
-                                            }
-                                            name='Video của bạn'
-                                            active={false}
-                                        />
-                                        <SideBarItem
-                                            icon={
-                                                <BiTimeFive className='w-[25px] h-[25px]' />
-                                            }
-                                            name='Xem sau'
-                                            active={false}
-                                        />
-                                        <SideBarItem
-                                            icon={
-                                                <AiOutlineLike className='w-[25px] h-[25px]' />
-                                            }
-                                            name='Video đã thích'
-                                            active={false}
-                                        />
-                                    </div>
-                                    <div className='flex flex-col py-[8px] border-b-[1px] border-b-solid'>
-                                        <div className='flex items-center justify-start py-[8px] px-[12px]'>
-                                            <span className='text-[16px]'>
-                                                Kênh đăng ký
-                                            </span>
-                                        </div>
-                                        <div className='flex items-center justify-between py-[8px] px-[12px] rounded-lg cursor-pointer'>
-                                            <div className='flex items-center gap-4'>
-                                                <img
-                                                    src='https://source.unsplash.com/random'
-                                                    className='w-[25px] h-[25px] rounded-full'
-                                                />
-                                                <span className='text-[14px] font-[400]'>
-                                                    Thư viện
-                                                </span>
-                                            </div>
-                                        </div>
+                                        <Link href={`/history/${account?.id}`}>
+                                            <SideBarItem
+                                                icon={
+                                                    <GiBackwardTime className='w-[25px] h-[25px]' />
+                                                }
+                                                name='Video đã xem'
+                                                active={pathname.includes(
+                                                    '/history',
+                                                )}
+                                            />
+                                        </Link>
+                                        <Link
+                                            href={`/channel/${account?.channel?.id}/content`}
+                                        >
+                                            <SideBarItem
+                                                icon={
+                                                    <AiOutlinePlaySquare className='w-[25px] h-[25px]' />
+                                                }
+                                                name='Video của bạn'
+                                                active={
+                                                    pathname ==
+                                                    `/channel/${account?.channel?.id}/content`
+                                                }
+                                            />
+                                        </Link>
+                                        <Link
+                                            href={`/watch_late/${account?.id}`}
+                                        >
+                                            <SideBarItem
+                                                icon={
+                                                    <BiTimeFive className='w-[25px] h-[25px]' />
+                                                }
+                                                name='Xem sau'
+                                                active={pathname.includes(
+                                                    '/watch_late',
+                                                )}
+                                            />
+                                        </Link>
+                                        <Link href={`/like/${account?.id}`}>
+                                            <SideBarItem
+                                                icon={
+                                                    <AiOutlineLike className='w-[25px] h-[25px]' />
+                                                }
+                                                name='Video đã thích'
+                                                active={pathname.includes(
+                                                    '/like',
+                                                )}
+                                            />
+                                        </Link>
                                     </div>
                                 </div>
                             </>
@@ -143,22 +175,26 @@ const SideBar = ({
                     </>
                 ) : (
                     <div className='flex flex-col px-[4px]'>
-                        <SideBarItem
-                            icon={
-                                <MdHomeFilled className='w-[25px] h-[25px]' />
-                            }
-                            name='Trang chủ'
-                            active={true}
-                            type='collapse'
-                        />
-                        <SideBarItem
-                            icon={
-                                <BsCollectionPlay className='w-[25px] h-[25px]' />
-                            }
-                            name='Kênh đăng ký'
-                            active={false}
-                            type='collapse'
-                        />
+                        <Link href={'/'}>
+                            <SideBarItem
+                                icon={
+                                    <MdHomeFilled className='w-[25px] h-[25px]' />
+                                }
+                                name='Trang chủ'
+                                active={pathname == '/'}
+                                type='collapse'
+                            />
+                        </Link>
+                        <Link href={'/subcribed_channel'}>
+                            <SideBarItem
+                                icon={
+                                    <BsCollectionPlay className='w-[25px] h-[25px]' />
+                                }
+                                name='Kênh đăng ký'
+                                active={pathname == '/subcribed_channel'}
+                                type='collapse'
+                            />
+                        </Link>
                     </div>
                 )}
             </ScrollArea>
@@ -174,74 +210,76 @@ const SideBar = ({
                                         }}
                                         className='w-[25px] h-[25px]'
                                     />
-                                    <span className='text-[40px] font-bold text-[#6A5BCD]'>
-                                        NextTub
-                                    </span>
-                                </div>
-                            </div>
-                            <div className='flex flex-col py-[8px] border-b-[1px] border-b-solid'>
-                                <SideBarItem
-                                    icon={
-                                        <MdHomeFilled className='w-[25px] h-[25px]' />
-                                    }
-                                    name='Trang chủ'
-                                    active={true}
-                                />
-                                <SideBarItem
-                                    icon={
-                                        <BsCollectionPlay className='w-[25px] h-[25px]' />
-                                    }
-                                    name='Kênh đăng ký'
-                                    active={false}
-                                />
-                            </div>
-                            <div className='flex flex-col py-[8px] border-b-[1px] border-b-solid'>
-                                <SideBarItem
-                                    icon={
-                                        <GiBackwardTime className='w-[25px] h-[25px]' />
-                                    }
-                                    name='Video đã xem'
-                                    active={false}
-                                />
-                                <SideBarItem
-                                    icon={
-                                        <AiOutlinePlaySquare className='w-[25px] h-[25px]' />
-                                    }
-                                    name='Video của bạn'
-                                    active={false}
-                                />
-                                <SideBarItem
-                                    icon={
-                                        <BiTimeFive className='w-[25px] h-[25px]' />
-                                    }
-                                    name='Xem sau'
-                                    active={false}
-                                />
-                                <SideBarItem
-                                    icon={
-                                        <AiOutlineLike className='w-[25px] h-[25px]' />
-                                    }
-                                    name='Video đã thích'
-                                    active={false}
-                                />
-                            </div>
-                            <div className='flex flex-col py-[8px] border-b-[1px] border-b-solid'>
-                                <div className='flex items-center justify-start py-[8px] px-[12px]'>
-                                    <span className='text-[16px]'>
-                                        Kênh đăng ký
-                                    </span>
-                                </div>
-                                <div className='flex items-center justify-between py-[8px] px-[12px] rounded-lg cursor-pointer'>
-                                    <div className='flex items-center gap-4'>
-                                        <img
-                                            src='https://source.unsplash.com/random'
-                                            className='w-[25px] h-[25px] rounded-full'
-                                        />
-                                        <span className='text-[14px] font-[400]'>
-                                            Thư viện
+                                    <Link href={'/'}>
+                                        <span className='text-[40px] font-bold text-[#6A5BCD]'>
+                                            NextTub
                                         </span>
-                                    </div>
+                                    </Link>
                                 </div>
+                            </div>
+                            <div className='flex flex-col py-[8px] border-b-[1px] border-b-solid'>
+                                <Link href={'/'}>
+                                    <SideBarItem
+                                        icon={
+                                            <MdHomeFilled className='w-[25px] h-[25px]' />
+                                        }
+                                        name='Trang chủ'
+                                        active={pathname == '/'}
+                                    />
+                                </Link>
+                                <Link href={'/subcribed_channel'}>
+                                    <SideBarItem
+                                        icon={
+                                            <BsCollectionPlay className='w-[25px] h-[25px]' />
+                                        }
+                                        name='Kênh đăng ký'
+                                        active={
+                                            pathname == '/subcribed_channel'
+                                        }
+                                    />
+                                </Link>
+                            </div>
+                            <div className='flex flex-col py-[8px] border-b-[1px] border-b-solid'>
+                                <Link href={`/history/${account?.id}`}>
+                                    <SideBarItem
+                                        icon={
+                                            <GiBackwardTime className='w-[25px] h-[25px]' />
+                                        }
+                                        name='Video đã xem'
+                                        active={pathname.includes('/history')}
+                                    />
+                                </Link>
+                                <Link
+                                    href={`/channel/${account?.channel?.id}/content`}
+                                >
+                                    <SideBarItem
+                                        icon={
+                                            <AiOutlinePlaySquare className='w-[25px] h-[25px]' />
+                                        }
+                                        name='Video của bạn'
+                                        active={false}
+                                    />
+                                </Link>
+                                <Link href={`/watch_late/${account?.id}`}>
+                                    <SideBarItem
+                                        icon={
+                                            <BiTimeFive className='w-[25px] h-[25px]' />
+                                        }
+                                        name='Xem sau'
+                                        active={pathname.includes(
+                                            '/watch_late',
+                                        )}
+                                    />
+                                </Link>
+                                <Link href={`/like/${account?.id}`}>
+                                    <SideBarItem
+                                        icon={
+                                            <AiOutlineLike className='w-[25px] h-[25px]' />
+                                        }
+                                        name='Video đã thích'
+                                        active={pathname.includes('/like')}
+                                    />
+                                </Link>
                             </div>
                         </div>
                     </SheetContent>

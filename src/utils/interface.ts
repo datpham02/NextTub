@@ -1,24 +1,18 @@
+import React from 'react'
+import { VideoWatched } from './Interface/Account'
+import { Comment, Video } from './Interface/Video'
+
 export interface HeaderProps {
     handleHideSideBar: () => void
 }
-export interface InputProps {
-    icon: React.ReactNode
-    name: string
-    value: string
-    inputName: string
-    className?: string
-    onChange: any
-    placeHolder: string
-}
+
 export interface ButtonProps {
     children: React.ReactNode
     className?: string
     onClick?: any
+    type: 'button' | 'reset' | 'submit' | undefined
 }
-export interface LoginData {
-    email: string
-    password: string
-}
+
 export interface SideBarItemProps {
     icon: React.ReactNode
     name: string
@@ -40,12 +34,62 @@ export interface VideoPlayerProps {
     poster: string
     alt: string
     size?: 'normal' | 'minimize'
+    videoId?: number
 }
 export interface UpLoadPosterFieldProps {
-    poster: { img: File | string; imgPreview: string; select: boolean }[]
+    poster: {
+        id: string
+        img: File | string
+        imgPreview: string
+        select: boolean
+    }[]
     handleUpLoadPoster: (e: any) => void
     handleSelectPoster: (index: number) => void
 }
 export interface VideoPlayerLayoutProps {
     size: 'normal' | 'minimize'
+}
+export interface LikeProps {
+    commentId: number
+    count: number
+    isLike: boolean
+    accountId: number
+    videoId: number
+}
+export interface DisLikeProps {
+    commentId: number
+    isDisLike: boolean
+    accountId: number
+    videoId: number
+}
+export interface CommentProps {
+    comment: Comment
+}
+export interface CommentItemProps {
+    comment: Comment
+}
+export interface WatchVideoProps {
+    video: Video
+}
+export interface HistoryProps {
+    videos: VideoWatched[]
+}
+export interface WatchLateProps {
+    id: number
+    video: Video[]
+}
+export interface VideoLikeProps {
+    videos: { id: number; likeAt: string; video: Video }[]
+}
+export interface SubcribedChannelVideoProps {
+    videos: Video[]
+}
+export interface InputCommentProps {
+    parentCommentId?: any
+    replyToAccountId?: any
+    videoId: number
+}
+export interface UseDebounce {
+    value: string
+    delay: number
 }

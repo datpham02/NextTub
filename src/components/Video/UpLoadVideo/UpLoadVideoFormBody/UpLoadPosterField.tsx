@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import { BiImageAdd } from 'react-icons/bi'
@@ -8,7 +9,10 @@ const UpLoadPosterField = ({
     handleUpLoadPoster,
     handleSelectPoster,
 }: UpLoadPosterFieldProps) => {
-    const { register } = useFormContext()
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext()
     return (
         <div className='flex flex-col gap-2'>
             <span className='font-medium'>Hình thu nhỏ</span>
@@ -37,9 +41,7 @@ const UpLoadPosterField = ({
                     />
                     <input
                         className='hidden'
-                        {...register('poster', {
-                            required: true,
-                        })}
+                        {...register('poster', { required: true })}
                     />
                 </div>
 
@@ -47,7 +49,10 @@ const UpLoadPosterField = ({
                     if (posterData.select) {
                         return (
                             <div
-                                key={posterData.img.toString()}
+                                key={posterData.id}
+                                onClick={() => {
+                                    handleSelectPoster(index)
+                                }}
                                 className='relative w-[153px] h-[82px] border-[2px] border-[black] rounded-[5px]'
                             >
                                 <img
@@ -59,7 +64,7 @@ const UpLoadPosterField = ({
                     } else {
                         return (
                             <div
-                                key={posterData.img.toString()}
+                                key={posterData.id}
                                 onClick={() => {
                                     handleSelectPoster(index)
                                 }}

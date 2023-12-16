@@ -1,26 +1,31 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import VideoPlayer from '../../VideoPlayer'
 import { BiImageAdd } from 'react-icons/bi'
 import { MdFileUpload } from 'react-icons/md'
 import { useFormContext } from 'react-hook-form'
 import { twJoin } from 'tailwind-merge'
-import { handlePosterSelect } from '~/utils/feature'
+import { handlePosterSelect, roundingDurationVideo } from '~/utils/feature'
 import UpLoadPosterField from './UpLoadPosterField'
 import UpLoadVideoFormFooter from '../UpLoadVideoFormFooter'
-
+import { ErrorMessage } from '@hookform/error-message'
+import { v4 as uuidv4 } from 'uuid'
 const UpLoadVideoFormBody = () => {
     const {
         register,
         setValue,
-        watch,
         formState: { errors },
     } = useFormContext()
     const [videoFile, setVideoFile] = useState<
         { file: File; filePreview: string } | undefined
     >(undefined)
     const [poster, setPoster] = useState<
-        { img: File | string; imgPreview: string; select: boolean }[]
+        {
+            id: string
+            img: File | string
+            imgPreview: string
+            select: boolean
+        }[]
     >([])
 
     const handleSelectPoster = (indexSelect: number) => {
@@ -28,8 +33,13 @@ const UpLoadVideoFormBody = () => {
 
         tempArrayPoster.forEach((posterData, index) => {
             if (indexSelect == index) {
-                posterData.select = true
-                setValue('poster', tempArrayPoster[indexSelect].img)
+                if (posterData.select) {
+                    posterData.select = false
+                    setValue('poster', null)
+                } else {
+                    posterData.select = true
+                    setValue('poster', posterData.img)
+                }
             } else {
                 posterData.select = false
             }
@@ -38,6 +48,7 @@ const UpLoadVideoFormBody = () => {
         setPoster(tempArrayPoster)
     }
     const handleUpLoadPoster = (e: any) => {
+        const id = uuidv4()
         if (poster.length > 1) {
             const tempPosterArray = [...poster]
             const posterRemove = tempPosterArray.shift()
@@ -46,6 +57,7 @@ const UpLoadVideoFormBody = () => {
             setPoster([
                 ...tempPosterArray,
                 {
+                    id: id,
                     img: e.target.files[0],
                     imgPreview: imgPreview,
                     select: false,
@@ -58,6 +70,7 @@ const UpLoadVideoFormBody = () => {
         setPoster([
             ...poster,
             {
+                id: id,
                 img: e.target.files[0],
                 imgPreview: imgPreview,
                 select: false,
@@ -65,7 +78,21 @@ const UpLoadVideoFormBody = () => {
         ])
         e.target.value = null
     }
+    const getDurationVideo = (src: string) => {
+        const video = document.createElement('video')
+        video.setAttribute('src', src)
 
+        document.body.appendChild(video)
+        video.addEventListener('loadedmetadata', () => {
+            console.log(roundingDurationVideo(video.duration) as string)
+            setValue(
+                'duration',
+                roundingDurationVideo(video.duration) as string,
+            )
+            document.body.removeChild(video)
+        })
+        video.load()
+    }
     if (!videoFile) {
         return (
             <div
@@ -85,6 +112,7 @@ const UpLoadVideoFormBody = () => {
                         filePreview: filePreview,
                     })
                     setValue('video', e.dataTransfer.files[0])
+                    getDurationVideo(filePreview)
                 }}
                 className='bg-[#fff] flex flex-col gap-6 justify-center items-center w-[960px] h-[500px]'
             >
@@ -112,6 +140,7 @@ const UpLoadVideoFormBody = () => {
                                 filePreview: filePreview,
                             })
                             setValue('video', e.target.files[0])
+                            getDurationVideo(filePreview)
                         }}
                     />
                 </div>
@@ -126,22 +155,44 @@ const UpLoadVideoFormBody = () => {
                     <div className='grid grid-cols-12 '>
                         <div className='col-span-8 px-[24px] flex flex-col gap-4'>
                             <div className='relative'>
-                                <span className='absolute text-[13px] top-[10px] left-[10px] text-[#606060]'>
+                                <span
+                                    className={twJoin(
+                                        'absolute text-[13px] top-[10px] left-[10px] ',
+                                        errors.title
+                                            ? 'text-[red] '
+                                            : 'text-[#606060] ',
+                                    )}
+                                >
                                     {'Tiêu đề (bắt buộc)'}
                                 </span>
                                 <textarea
                                     {...register('title', {
-                                        required: true,
+                                        required: {
+                                            value: true,
+                                            message:
+                                                'Không được để trống tiêu đề',
+                                        },
                                     })}
                                     style={{
                                         resize: 'none',
                                     }}
                                     rows={1}
                                     className={twJoin(
-                                        'w-full px-[10px] pt-[30px] pb-[25px] placeholder:font-medium placeholder:text-[14px] rounded-[5px] border-[1px] border-[#cccccc] outline-none',
-                                        errors.title ? 'red' : '#cccccc',
+                                        'w-full px-[10px] pt-[30px] pb-[25px] placeholder:font-medium placeholder:text-[14px] rounded-[5px] border-[1px] outline-none',
+                                        errors.title
+                                            ? 'border-[red] placeholder:text-[red] '
+                                            : 'border-[#cccccc] ',
                                     )}
                                     placeholder='Thêm tiêu đề mô tả video của bạn'
+                                />
+                                <ErrorMessage
+                                    errors={errors}
+                                    name='title'
+                                    render={({ message }) => (
+                                        <p className='text-[red] text-[14px]'>
+                                            {message}
+                                        </p>
+                                    )}
                                 />
                             </div>
                             <div className='relative'>
@@ -174,6 +225,12 @@ const UpLoadVideoFormBody = () => {
                                 <input
                                     className='hidden'
                                     {...register('video', {
+                                        required: true,
+                                    })}
+                                />
+                                <input
+                                    className='hidden'
+                                    {...register('duration', {
                                         required: true,
                                     })}
                                 />

@@ -1,12 +1,18 @@
 'use client'
 import Tippy from '@tippyjs/react/headless'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoLogOutOutline } from 'react-icons/io5'
 import { RiAccountBoxLine } from 'react-icons/ri'
+import { useAuth } from '~/store/Auth'
 const ChannelHeader = () => {
+    const { account, logout, updateAccount } = useAuth()
     const [accountSettingVisible, setAccountSettingVisible] =
         useState<boolean>(false)
+
+    useEffect(() => {
+        updateAccount()
+    }, [])
     return (
         <div className=' min-h-[80px] flex justify-between items-center shadow-md px-[50px] py-[12px] '>
             <div className='flex items-center gap-3'>
@@ -33,15 +39,13 @@ const ChannelHeader = () => {
                             <div className='flex gap-3 items-center border-b-[1px] border-b-solid px-[15px] py-[10px]'>
                                 <div>
                                     <img
-                                        src={
-                                            'https://cdn.pixabay.com/photo/2022/12/01/04/42/man-7628305_1280.jpg'
-                                        }
+                                        src={account?.channel?.avatar}
                                         className='rounded-full w-[35px] h-[35px]'
                                     />
                                 </div>
                                 <div className='flex flex-col'>
-                                    <span>Trọng Đạt</span>
-                                    <span>@phamtrongdat</span>
+                                    <span>{account?.channel?.name}</span>
+                                    <span>{account?.email}</span>
                                 </div>
                             </div>
                             <div className='flex flex-col'>
@@ -58,6 +62,7 @@ const ChannelHeader = () => {
 
                                 <div
                                     onClick={() => {
+                                        logout()
                                         setAccountSettingVisible(false)
                                     }}
                                     className='flex items-center hover:bg-[rgba(0,0,0,0.1)] px-[15px] py-[8px] cursor-pointer'
@@ -77,9 +82,7 @@ const ChannelHeader = () => {
                         onClick={() => {
                             setAccountSettingVisible(!accountSettingVisible)
                         }}
-                        src={
-                            'https://cdn.pixabay.com/photo/2022/12/01/04/42/man-7628305_1280.jpg'
-                        }
+                        src={account?.channel?.avatar}
                         className='rounded-full w-[40px] h-[40px]'
                     />
                 </Tippy>

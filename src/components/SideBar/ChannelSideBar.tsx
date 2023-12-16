@@ -5,17 +5,17 @@ import React from 'react'
 import { BiCommentDetail } from 'react-icons/bi'
 import { MdOutlineVideoLibrary } from 'react-icons/md'
 import { twJoin } from 'tailwind-merge'
+import { useAuth } from '~/store/Auth'
 
 const ChannelSideBar = () => {
     const pathName = usePathname()
+    const { account } = useAuth()
 
     return (
         <div className='flex flex-col items-center border-r-[#e5e5e5] border-r-[1px] w-[280px]'>
             <div className='flex flex-col gap-2 justify-center py-[30px]'>
                 <img
-                    src={
-                        'https://cdn.pixabay.com/photo/2022/12/01/04/42/man-7628305_1280.jpg'
-                    }
+                    src={account?.channel?.avatar}
                     className='rounded-full w-[130px] h-[130px]'
                 />
                 <div className='flex flex-col items-center'>
@@ -23,17 +23,17 @@ const ChannelSideBar = () => {
                         Kênh của bạn
                     </span>
                     <span className='text-[12px] text-[#606060]'>
-                        Trọng Đạt
+                        {account?.channel?.name}
                     </span>
                 </div>
             </div>
 
             <div className='relative w-full pl-[4px]'>
                 <Link
-                    href='/channel/content'
+                    href={`/channel/${account?.channel?.id}/content`}
                     className={twJoin(
                         'flex items-center hover:bg-[rgba(0,0,0,0.03)] px-[25px] py-[8px] cursor-pointer',
-                        pathName == '/channel/content'
+                        pathName == `/channel/${account?.channel?.id}/content`
                             ? 'text-[#c00]'
                             : 'text-[#000]',
                     )}
@@ -45,11 +45,11 @@ const ChannelSideBar = () => {
                         </span>
                     </div>
                 </Link>
-                <Link
-                    href='/channel/comment'
+                {/* <Link
+                    href={`/channel/${account?.channel?.id}/comment`}
                     className={twJoin(
                         'flex items-center hover:bg-[rgba(0,0,0,0.03)] px-[25px] py-[8px] cursor-pointer',
-                        pathName == '/channel/comment'
+                        pathName == `/channel/${account?.channel?.id}/comment`
                             ? 'text-[#c00]'
                             : 'text-[#000]',
                     )}
@@ -60,7 +60,7 @@ const ChannelSideBar = () => {
                             Bình luận
                         </span>
                     </div>
-                </Link>
+                </Link> */}
             </div>
         </div>
     )

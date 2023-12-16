@@ -4,8 +4,10 @@ import TippyHover from '@tippyjs/react'
 
 import React, { useState } from 'react'
 import { AiOutlinePlaySquare, AiOutlineVideoCameraAdd } from 'react-icons/ai'
+import { useAuth } from '~/store/Auth'
 
 const CreateVideo = () => {
+    const { account } = useAuth()
     const [visible, setVisible] = useState(false)
     return (
         <Tippy
@@ -20,16 +22,21 @@ const CreateVideo = () => {
                     {...attrs}
                     className='w-[180px] bg-[#fff]  rounded-md py-[15px] shadow-md'
                 >
-                    <div className='flex justify-between items-center px-[25px] hover:bg-[rgba(0,0,0,0.1)] py-[8px]'>
-                        <div className='flex items-center gap-4 cursor-default'>
-                            <AiOutlinePlaySquare className='w-[25px] h-[25px]' />
-                            <Link href={'/studio'}>
+                    <Link
+                        href={`/channel/${account?.channel?.id}/video`}
+                        onClick={() => {
+                            setVisible(false)
+                        }}
+                    >
+                        <div className='flex items-center px-[25px] hover:bg-[rgba(0,0,0,0.1)] py-[8px]'>
+                            <div className='flex items-center gap-4 cursor-default'>
+                                <AiOutlinePlaySquare className='w-[25px] h-[25px]' />
                                 <span className='font-[550] text-[14px]'>
                                     Tải video lên
                                 </span>
-                            </Link>
+                            </div>
                         </div>
-                    </div>
+                    </Link>
                 </div>
             )}
         >
